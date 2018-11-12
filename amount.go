@@ -19,12 +19,13 @@ type AmountUnit int
 // These constants define various units used when describing a bitcoin
 // monetary amount.
 const (
+	AmountGigaBTC  AmountUnit = 9
 	AmountMegaBTC  AmountUnit = 6
 	AmountKiloBTC  AmountUnit = 3
 	AmountBTC      AmountUnit = 0
 	AmountMilliBTC AmountUnit = -3
 	AmountMicroBTC AmountUnit = -6
-	AmountSatoshi  AmountUnit = -8
+	AmountSatoshi             = AmountMicroBTC
 )
 
 // String returns the unit as a string.  For recognized units, the SI
@@ -32,20 +33,20 @@ const (
 // units, "1eN BTC" is returned, where N is the AmountUnit.
 func (u AmountUnit) String() string {
 	switch u {
+	case AmountGigaBTC:
+		return "GCoin"
 	case AmountMegaBTC:
-		return "MBTC"
+		return "MCoin"
 	case AmountKiloBTC:
-		return "kBTC"
+		return "kCoin"
 	case AmountBTC:
-		return "BTC"
+		return "Coin"
 	case AmountMilliBTC:
-		return "mBTC"
+		return "mCoin"
 	case AmountMicroBTC:
-		return "μBTC"
-	case AmountSatoshi:
-		return "Satoshi"
+		return "μCoin"
 	default:
-		return "1e" + strconv.FormatInt(int64(u), 10) + " BTC"
+		return "1e" + strconv.FormatInt(int64(u), 10) + " Coin"
 	}
 }
 
@@ -91,7 +92,7 @@ func NewAmount(f float64) (Amount, error) {
 // ToUnit converts a monetary amount counted in bitcoin base units to a
 // floating point value representing an amount of bitcoin.
 func (a Amount) ToUnit(u AmountUnit) float64 {
-	return float64(a) / math.Pow10(int(u+8))
+	return float64(a) / math.Pow10(int(u-AmountSatoshi))
 }
 
 // ToBTC is the equivalent of calling ToUnit with AmountBTC.
@@ -105,7 +106,7 @@ func (a Amount) ToBTC() float64 {
 // the units with SI notation, or "Satoshi" for the base unit.
 func (a Amount) Format(u AmountUnit) string {
 	units := " " + u.String()
-	return strconv.FormatFloat(a.ToUnit(u), 'f', -int(u+8), 64) + units
+	return strconv.FormatFloat(a.ToUnit(u), 'f', -int(u-AmountSatoshi), 64) + units
 }
 
 // String is the equivalent of calling Format with AmountBTC.
