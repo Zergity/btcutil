@@ -19,13 +19,7 @@ const OdrIndexUnknown = -1
 // Odr ...
 type Odr struct {
 	*Tx
-	msgOdr *wire.MsgOdr
-}
-
-// MsgOdr returns the underlying wire.MsgOdr for the transaction.
-func (t *Odr) MsgOdr() *wire.MsgOdr {
-	// Return the cached transaction.
-	return t.msgOdr
+	*wire.MsgOdr
 }
 
 // NewOdr returns a new instance of an order given an underlying
@@ -33,7 +27,7 @@ func (t *Odr) MsgOdr() *wire.MsgOdr {
 func NewOdr(msgOdr *wire.MsgOdr) *Odr {
 	return &Odr{
 		Tx: NewTx(msgOdr.MsgTx),
-		msgOdr: &wire.MsgOdr{
+		MsgOdr: &wire.MsgOdr{
 			MsgTx: msgOdr.MsgTx,
 		},
 	}
@@ -56,8 +50,13 @@ func NewOdrFromReader(r io.Reader) (*Odr, error) {
 	}
 	return &Odr{
 		Tx: tx,
-		msgOdr: &wire.MsgOdr{
+		MsgOdr: &wire.MsgOdr{
 			MsgTx: tx.msgTx,
 		},
 	}, nil
+}
+
+// MsgTx resolves ambiguous selector
+func (o *Odr) MsgTx() *wire.MsgTx {
+	return o.Tx.MsgTx()
 }

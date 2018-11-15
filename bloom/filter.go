@@ -361,7 +361,7 @@ func (bf *Filter) matchOdrAndUpdate(odr *btcutil.Odr) bool {
 	// on the network since it avoids the need for another filteradd message
 	// from the client and avoids some potential races that could otherwise
 	// occur.
-	for i, txOut := range odr.MsgOdr().TxOut {
+	for i, txOut := range odr.TxOut {
 		pushedData, err := txscript.PushedData(txOut.PkScript)
 		if err != nil {
 			continue
@@ -388,7 +388,7 @@ func (bf *Filter) matchOdrAndUpdate(odr *btcutil.Odr) bool {
 
 	// Check if the filter matches any outpoints this order spends or
 	// any any data elements in the signature scripts of any of the inputs.
-	for _, odrin := range odr.MsgOdr().TxIn {
+	for _, odrin := range odr.TxIn {
 		if bf.matchesOutPoint(&odrin.PreviousOutPoint) {
 			return true
 		}
