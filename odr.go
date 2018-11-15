@@ -33,6 +33,16 @@ func NewOdr(msgOdr *wire.MsgOdr) *Odr {
 	}
 }
 
+// NewOdrFromTx ...
+func NewOdrFromTx(tx *Tx) *Odr {
+	return &Odr{
+		Tx: tx,
+		MsgOdr: &wire.MsgOdr{
+			MsgTx: tx.MsgTx(),
+		},
+	}
+}
+
 // NewOdrFromBytes returns a new instance of an order given the
 // serialized bytes.  See Tx.
 func NewOdrFromBytes(serializedTx []byte) (*Odr, error) {
